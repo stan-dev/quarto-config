@@ -464,7 +464,9 @@ pre.sourceCode {
 }
 .option {
   border: 1px solid var(--stan-dark);
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 }
 .option.selected {
@@ -480,14 +482,26 @@ pre.sourceCode {
   border: 1px solid var(--stan-dark);
   color: var(--stan-dark);
 }
-.grid-item + .grid-item {
-  border-left: 0px;
+
+/* when we think we're all on one line, remove the double bars */
+@container (min-width: 500px) {
+  .grid-item + .grid-item {
+    margin-left: -1px;
+  }
 }
 
-.grid-blank {
-  border: 0px;
-  background-color: var(--stan-bg);
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  margin-left: 1px;
 }
+
+.flex-grid .col {
+  flex: 1 1 100px;
+  margin-top: 0.25rem;
+}
+
 .row-label {
   padding: 10px;
   color: var(--stan-dark);
@@ -497,16 +511,21 @@ pre.sourceCode {
   width: 20%;
 }
 
-.flex-grid {
-  display: flex;
-}
-
-.flex-grid .col {
-  flex: 1;
-  margin-top: 0.25rem;
+/*  on small screens */
+@container (max-width: 700px) {
+  /* Move the label above, rather than to the side */
+  .row-label {
+    flex-basis: 100%;
+  }
 }
 
 .highlight-box {
   background-color: var(--stan-highlight);
   padding-left: 10px;
+}
+
+#install-grid,
+#prerequsite-box,
+#install-box {
+  container-type: inline-size;
 }
