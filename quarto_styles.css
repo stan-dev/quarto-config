@@ -1,7 +1,3 @@
-html {
-  scroll-padding-top: 70px; /* height of header */
-}
-
 /* quarto website styling */
 
 @media (min-width: 1020px) {
@@ -20,14 +16,26 @@ html {
     margin-left: 0.1em;
   }
 }
-/*Remove top and bottom padding from navbar image*/
+
+/* navbar sizing -- important to avoid odd-colored gaps */
+
+.navbar-logo {
+  max-height: 44px;
+}
+
+/* Remove top and bottom padding from navbar image */
 .navbar-brand {
   padding-top: 0;
   padding-bottom: 0;
 }
 
-.navbar-logo {
-  max-height: 44px;
+html {
+  scroll-padding-top: 61px; /* height of header */
+}
+
+/* controls what padding is on page-load before JS overwrites */
+body.nav-fixed {
+  padding-top: 61px;
 }
 
 .btn-action-primary {
