@@ -20,9 +20,14 @@ html {
     margin-left: 0.1em;
   }
 }
+/*Remove top and bottom padding from navbar image*/
+.navbar-brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
-.navbar-brand > img {
-  max-height: 40px;
+.navbar-logo {
+  max-height: 44px;
 }
 
 .btn-action-primary {
