@@ -40,10 +40,6 @@ html {
   color: white;
 }
 
-#btn-docs {
-  background-color: var(--stan-highlight);
-}
-
 .btn-action {
   min-width: 165px;
   border-radius: 30px;
@@ -311,7 +307,6 @@ tbody td:first-child {
   background-color: var(--stan-bg);
   color: var(--stan-dark);
 }
-
 
 /* functions reference */
 .index-container {
