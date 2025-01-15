@@ -21,14 +21,8 @@ html {
   }
 }
 
-@media (min-width: 991.98px) {
-  #quarto-header {
-    border-bottom: 1px solid;
-  }
-}
-
 .navbar-brand > img {
-  max-height: 36px;
+  max-height: 40px;
 }
 
 .btn-action-primary {
