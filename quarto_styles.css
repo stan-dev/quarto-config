@@ -165,47 +165,8 @@ pre.sourceCode {
   padding: 0;
 }
 
-/* quarto landing page styling */
 
-.content-block {
-  padding-top: 20px;
-  padding-bottom: 10px;
-  margin-left: 30px;
-  margin-right: 30px;
-}
-
-@media (min-width: 900px) {
-  .content-block {
-    margin-left: 50px;
-    margin-right: 50px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .content-block {
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-.hero-banner {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  color: var(--stan-hero);
-  background-color: var(--stan-hero-bg);
-  border: 10px solid var(--stan-secondary);
-}
-
-.hero-banner h1 {
-  font-size: 2.5rem;
-  margin-top: 1rem;
-}
-
-.hero-banner .content-block {
-  padding-top: 0;
-}
+/* custom CSS for the install page selection */
 
 .grid-container {
   display: grid;
