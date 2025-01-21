@@ -25,105 +25,112 @@ pipeline {
                 docker {
                     image 'alpine/git'
                     label 'linux && triqs'
+                    args "--entrypoint=''"
                 }
             }
             steps {
-                /* Pull docs and init submodules */
-                checkout([$class: 'GitSCM',
-                          branches: [[name: '*/master']],
-                          doGenerateSubmoduleConfigurations: false,
-                          extensions: [[$class: 'SubmoduleOption',
-                                        disableSubmodules: false,
-                                        parentCredentials: false,
-                                        recursiveSubmodules: true,
-                                        reference: '',
-                                        trackingSubmodules: false]],
-                          submoduleCfg: [],
-                          userRemoteConfigs: [[url: "https://github.com/stan-dev/docs.git", credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b']]]
-                )
-
-                sh """
-                    pushd src/quarto-config > /dev/null
-                    git checkout main
-                    git pull origin
-                    popd > /dev/null
-
-                    git submodule update --init --recursive
-                """
-
-                /* Create Pull Request */
                 withCredentials([usernamePassword(credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b',
                     usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                     sh """
+                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/docs.git
+
+                        cd docs
+
                         git config user.email "mc.stanislaw@gmail.com"
                         git config user.name "Stan Jenkins"
                         git config auth.token ${GITHUB_TOKEN}
 
-                        git add .
-                        commit_hash=\$(cd src/quarto-config && git rev-parse --short HEAD)
-                        git commit -m "Updating submodule quarto to $commit_hash"
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/docs.git master
+                        git checkout master
+                        git pull origin master
+                        git submodule update --init --recursive --remote
+
+                        cd src/quarto-config
+                        git checkout origin/main
+                        git pull origin main
+                        cd ../..
+
+                        git submodule update --init --recursive --remote
+                    """
+                    script {
+                        env.COMMIT_HASH = sh (
+                            script: 'cd docs/src/quarto-config && git rev-parse --short HEAD && cd ../..',
+                            returnStdout: true
+                        )
+                    }
+                    sh """
+                        cd docs
+                        if [[ -n "`git status -s`" ]]; then
+                            git add .
+                            git commit -m "Updating submodule quarto to ${env.COMMIT_HASH.trim()}"
+                            git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/docs.git master
+                        fi
                     """
                 }
             }
+            post { always { deleteDir() } }
         }
 
         stage("Update stan-dev.github.io") {
             agent {
                 docker {
-                    image 'alpine/git'
+                    image 'mrnonz/alpine-git-curl'
                     label 'linux && triqs'
+                    args "--entrypoint=''"
                 }
             }
             steps {
-                /* Pull docs and init submodules */
-                checkout([$class: 'GitSCM',
-                          branches: [[name: '*/master']],
-                          doGenerateSubmoduleConfigurations: false,
-                          extensions: [[$class: 'SubmoduleOption',
-                                        disableSubmodules: false,
-                                        parentCredentials: false,
-                                        recursiveSubmodules: true,
-                                        reference: '',
-                                        trackingSubmodules: false]],
-                          submoduleCfg: [],
-                          userRemoteConfigs: [[url: "https://github.com/stan-dev/stan-dev.github.io.git", credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b']]]
-                )
-
-                sh """
-                    pushd quarto-config > /dev/null
-                    git checkout main
-                    git pull origin
-                    popd > /dev/null
-
-                    git submodule update --init --recursive
-                """
-
-                /* Create Pull Request */
                 withCredentials([usernamePassword(credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b',
                     usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                     sh """
+                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/stan-dev.github.io.git
+
+                        cd stan-dev.github.io
+
                         git config user.email "mc.stanislaw@gmail.com"
                         git config user.name "Stan Jenkins"
                         git config auth.token ${GITHUB_TOKEN}
 
-                        git checkout -b quarto-$commit_hash
+                        git checkout master
+                        git pull origin master
+                        git submodule update --init --recursive --remote
 
-                        git add .
-                        commit_hash=\$(cd quarto-config && git rev-parse --short HEAD)
-                        git commit -m "Updating submodule quarto to $commit_hash"
-                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/stan-dev.github.io.git quarto-$commit_hash
+                        cd quarto-config
+                        git checkout origin/main
+                        git pull origin main
+                        cd ../
 
-                        curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d '{"title": "Updating submodule quarto to $commit_hash", "base":"master", "body":"Updating submodule quarto to $commit_hash"}' "https://api.github.com/repos/stan-dev/stan-dev.github.io/pulls"
+                        git submodule update --init --recursive --remote
+
+                        git status
+                        pwd
+
+                    """
+                    script {
+                        env.COMMIT_HASH = sh (
+                            script: 'cd stan-dev.github.io/quarto-config && git rev-parse --short HEAD && cd ../..',
+                            returnStdout: true
+                        )
+                    }
+                    sh """
+                        pwd
+                        cd stan-dev.github.io
+                        if [[ -n "`git status -s`" ]]; then
+                            git checkout -b quarto-${env.COMMIT_HASH.trim()}
+                            git add .
+                            git commit -m "Updating submodule quarto to ${env.COMMIT_HASH.trim()}"
+                            git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/stan-dev.github.io.git quarto-${env.COMMIT_HASH.trim()}
+                            curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d '{"title": "Updating submodule quarto to ${env.COMMIT_HASH.trim()}", "base":"master", "body":"Updating submodule quarto to ${env.COMMIT_HASH.trim()}"}' "https://api.github.com/repos/stan-dev/stan-dev.github.io/pulls"
+                        fi
                     """
                 }
             }
+            post { always { deleteDir() } }
         }
 
     }
-    post {
-        success { script { utils.mailBuildResults("SUCCESSFUL") } }
-        unstable { script { utils.mailBuildResults("UNSTABLE", "stan-buildbot@googlegroups.com") } }
-        failure { script { utils.mailBuildResults("FAILURE", "stan-buildbot@googlegroups.com") } }
-    }
+    // post {
+    //     success { script { utils.mailBuildResults("SUCCESSFUL") } }
+    //     unstable { script { utils.mailBuildResults("UNSTABLE", "stan-buildbot@googlegroups.com") } }
+    //     failure { script { utils.mailBuildResults("FAILURE", "stan-buildbot@googlegroups.com") } }
+    // }
 }
