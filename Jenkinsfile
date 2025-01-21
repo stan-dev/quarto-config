@@ -42,13 +42,15 @@ pipeline {
                           userRemoteConfigs: [[url: "https://github.com/stan-dev/docs.git", credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b']]]
                 )
 
-                pushd src/quarto-config > /dev/null
-                git checkout main
-                git pull origin
-                export commit_hash=$(git rev-parse --short main)
-                popd > /dev/null
+                sh """
+                    pushd src/quarto-config > /dev/null
+                    git checkout main
+                    git pull origin
+                    export commit_hash=$(git rev-parse --short main)
+                    popd > /dev/null
 
-                git submodule update --init --recursive
+                    git submodule update --init --recursive
+                """
 
                 /* Create Pull Request */
                 withCredentials([usernamePassword(credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b',
@@ -88,13 +90,15 @@ pipeline {
                           userRemoteConfigs: [[url: "https://github.com/stan-dev/stan-dev.github.io.git", credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b']]]
                 )
 
-                pushd quarto-config > /dev/null
-                git checkout main
-                git pull origin
-                export commit_hash=$(git rev-parse --short main)
-                popd > /dev/null
+                sh """
+                    pushd quarto-config > /dev/null
+                    git checkout main
+                    git pull origin
+                    export commit_hash=$(git rev-parse --short main)
+                    popd > /dev/null
 
-                git submodule update --init --recursive
+                    git submodule update --init --recursive
+                """
 
                 /* Create Pull Request */
                 withCredentials([usernamePassword(credentialsId: 'a630aebc-6861-4e69-b497-fd7f496ec46b',
