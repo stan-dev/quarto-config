@@ -119,7 +119,7 @@ pipeline {
                             git add .
                             git commit -m "Updating submodule quarto to ${env.COMMIT_HASH.trim()}"
                             git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/stan-dev.github.io.git quarto-${env.COMMIT_HASH.trim()}
-                            curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d '{"title": "Updating submodule quarto to ${env.COMMIT_HASH.trim()}", "base":"master", "body":"Updating submodule quarto to ${env.COMMIT_HASH.trim()}"}' "https://api.github.com/repos/stan-dev/stan-dev.github.io/pulls"
+                            curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST -d '{"title": "Updating submodule quarto to ${env.COMMIT_HASH.trim()}", "base":"master", "head":"quarto-${env.COMMIT_HASH.trim()}", "body":"Updating submodule quarto to ${env.COMMIT_HASH.trim()}"}' "https://api.github.com/repos/stan-dev/stan-dev.github.io/pulls"
                         fi
                     """
                 }
