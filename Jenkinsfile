@@ -70,7 +70,7 @@ pipeline {
             post { always { deleteDir() } }
         }
 
-        stage("Update stan-dev.github.io") {
+        stage("Create PR in stan-dev.github.io") {
             agent {
                 docker {
                     image 'mrnonz/alpine-git-curl'
@@ -128,9 +128,9 @@ pipeline {
         }
 
     }
-    // post {
-    //     success { script { utils.mailBuildResults("SUCCESSFUL") } }
-    //     unstable { script { utils.mailBuildResults("UNSTABLE", "stan-buildbot@googlegroups.com") } }
-    //     failure { script { utils.mailBuildResults("FAILURE", "stan-buildbot@googlegroups.com") } }
-    // }
+    post {
+        success { script { utils.mailBuildResults("SUCCESSFUL") } }
+        unstable { script { utils.mailBuildResults("UNSTABLE", "stan-buildbot@googlegroups.com") } }
+        failure { script { utils.mailBuildResults("FAILURE", "stan-buildbot@googlegroups.com") } }
+    }
 }
