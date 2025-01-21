@@ -46,7 +46,6 @@ pipeline {
                     pushd src/quarto-config > /dev/null
                     git checkout main
                     git pull origin
-                    export commit_hash=$(git rev-parse --short main)
                     popd > /dev/null
 
                     git submodule update --init --recursive
@@ -61,6 +60,7 @@ pipeline {
                         git config auth.token ${GITHUB_TOKEN}
 
                         git add .
+                        commit_hash=\$(cd src/quarto-config && git rev-parse --short HEAD)
                         git commit -m "Updating submodule quarto to $commit_hash"
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/docs.git master
                     """
@@ -94,7 +94,6 @@ pipeline {
                     pushd quarto-config > /dev/null
                     git checkout main
                     git pull origin
-                    export commit_hash=$(git rev-parse --short main)
                     popd > /dev/null
 
                     git submodule update --init --recursive
@@ -111,6 +110,7 @@ pipeline {
                         git checkout -b quarto-$commit_hash
 
                         git add .
+                        commit_hash=\$(cd quarto-config && git rev-parse --short HEAD)
                         git commit -m "Updating submodule quarto to $commit_hash"
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/stan-dev/stan-dev.github.io.git quarto-$commit_hash
 
