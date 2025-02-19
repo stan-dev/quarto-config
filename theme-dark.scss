@@ -1,8 +1,8 @@
+/*-- scss:uses --*/
+
+@use "theme-colors" as *;
+
 /*-- scss:defaults --*/
-
-
-@import "theme-colors";
-
 
 // Base document colors
 $body-bg: #181818;
@@ -27,7 +27,7 @@ $input-bg: #242424;
 $dropdown-bg: $body-bg;
 $dropdown-color: $body-color;
 $dropdown-link-color: $body-color;
-$dropdown-link-hover-bg: $gray-600;
+$dropdown-link-hover-bg: $medium-gray;
 $dropdown-link-hover-color: $off-white;
 
 $quarto-body-bg: $body-bg;
