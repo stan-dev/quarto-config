@@ -42,6 +42,7 @@
       <item>simplex</item>
       <item>unit_vector</item>
       <item>sum_to_zero_vector</item>
+      <item>sum_to_zero_matrix</item>
       <item>column_stochastic_matrix</item>
       <item>row_stochastic_matrix</item>
       <item>row_vector</item>
