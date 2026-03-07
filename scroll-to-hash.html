@@ -1,15 +1,27 @@
 <script>
 // Workaround for Safari not scrolling to URL fragment identifiers
-// on fresh page loads. Waits for Quarto's post-load DOM rendering
-// (sidebar, TOC, MathJax) to complete before scrolling.
+// on fresh page loads. Uses MutationObserver to wait for Quarto's
+// post-load DOM rendering (sidebar, TOC, MathJax) to settle before
+// scrolling. Scrolls as soon as DOM changes stop for 80ms.
 window.addEventListener('load', function () {
-  if (window.location.hash) {
-    setTimeout(function () {
-      var el = document.querySelector(window.location.hash);
-      if (el) {
-        el.scrollIntoView();
-      }
-    }, 400);
-  }
+  if (!window.location.hash) return;
+  var el = document.querySelector(window.location.hash);
+  if (!el) return;
+
+  var timer;
+  var observer = new MutationObserver(function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      observer.disconnect();
+      el.scrollIntoView();
+    }, 80);
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  timer = setTimeout(function () {
+    observer.disconnect();
+    el.scrollIntoView();
+  }, 80);
 });
 </script>
