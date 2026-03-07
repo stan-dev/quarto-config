@@ -1,6 +1,8 @@
-/*-- scss:defaults --*/
+/*-- scss:uses --*/
 
-@import "theme-colors";
+@use "theme-colors" as *;
+
+/*-- scss:defaults --*/
 
 $old-quarto-body-bg: #FEFBF2;
 $body-bg: #FEFBF2;
