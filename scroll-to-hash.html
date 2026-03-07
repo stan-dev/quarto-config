@@ -1,0 +1,15 @@
+<script>
+// Workaround for Safari not scrolling to URL fragment identifiers
+// on fresh page loads. Waits for Quarto's post-load DOM rendering
+// (sidebar, TOC, MathJax) to complete before scrolling.
+window.addEventListener('load', function () {
+  if (window.location.hash) {
+    setTimeout(function () {
+      var el = document.querySelector(window.location.hash);
+      if (el) {
+        el.scrollIntoView();
+      }
+    }, 400);
+  }
+});
+</script>
