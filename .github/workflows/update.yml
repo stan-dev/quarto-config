@@ -29,7 +29,7 @@ jobs:
           git push https://stan-buildbot:${{ secrets.STAN_BOT_TOKEN }}@github.com/stan-dev/docs master
 
   update-website:
-    environment: production
+    environment: push
     runs-on: ubuntu-latest
 
     steps:
