@@ -46,6 +46,7 @@ jobs:
           git config user.name "Stan Jenkins"
 
           git submodule update --init --recursive --remote
+          git checkout -b quarto-${{ github.sha }}
           git add .
           git commit -m "Updating submodule quarto to ${{ github.sha }}"
 
